@@ -24,15 +24,15 @@ echo
 echo "**** update repository package ****"
 echo
 
-apt-get update -y
+sudo apt-get update -y
 
 echo 
 echo "**** disable swap ****"
 echo 
 
-swapoff -a
-cp /etc/fstab /etc/fstab.bkp
-sed -i.bak '/ swap / s/^\(.*\)$/#/g' /etc/fstab
+sudo swapoff -a
+sudo cp /etc/fstab /etc/fstab.bkp
+sudo sed -i.bak '/ swap / s/^\(.*\)$/#/g' /etc/fstab
 
 echo 
 echo "**** install docker ****"
@@ -40,26 +40,34 @@ echo
 
 # code 
 
+
+
+
 echo 
 echo "**** install repository packages kubernetes ****"
 echo 
 
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/k8s.list
 
-echo 
+# sudo apt-get install -y ca-certificates curl
+# sudo apt-get install -y apt-transport-https
+
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+echo
 echo "**** update repository package ****"
 echo 
 
-apt-get update -y
+sudo apt-get update -y
 
 echo 
 echo "**** install kubectl, kubeadm and kubelet ****"
 echo 
 
-apt-get -y install kubectl
-apt-get -y install kubeadm
-apt-get -y install kubelet
+sudo apt-get -y install kubectl
+sudo apt-get -y install kubeadm
+sudo apt-get -y install kubelet
 
 # optipnal
 sudo apt-mark hold kubelet kubeadm kubectl
@@ -69,6 +77,7 @@ echo "**** init cluster ****"
 echo
 
 # init kubeadm
+kubeadm config images pull
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16
 
 mkdir -p $HOME/.kube

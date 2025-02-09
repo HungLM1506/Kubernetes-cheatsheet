@@ -131,7 +131,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 ## **Step 7: Initialize the Kubernetes Cluster (1 master node and 2 worker nodes)**
 
-![Kubernetes Architecture 1 master and 2 worker](https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg)
+![Kubernetes Architecture 1-master-2-worker](/images/1-master-2worker.png)
 
 Run the following command on the **k8s-master-1**:
 ```bash
@@ -151,7 +151,7 @@ sudo kubeadm join 192.168.1.111:6443 --token your_token --discovery-token-ca-cer
 ---
 
 ## **Step 8: Initialize the Kubernetes Cluster (3 master-worker nodes)**
-
+![Kubernetes Architecture 3-master-worker](/images/3-master-worker.png)
 ### **8.1: Perform in k8s-master-1**
 ```bash
 sudo kubeadm init --control-plane-endpoint "192.168.1.111:6443" --upload-certs

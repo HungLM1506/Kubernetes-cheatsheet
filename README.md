@@ -1,148 +1,54 @@
-## **Step 1: Update Your System**
-Update the package list and upgrade installed packages:
-```bash
-sudo apt update && sudo apt upgrade -y
-sudo reboot
+# Scripts Install Kubernetes
+
+## Description
+This repository contains scripts and detailed guides for installing Kubernetes in the cloud and on-premise environment, including both automatic and manual installation.
+
+## Directory Structure
+
+```
+SCRIPTS-INSTALL-KUBERNETES/
+├── command-kubectl/            # Documentation and guide for kubectl commands
+│   ├── cheatsheet.md           # Cheat sheet for basic commands
+│
+├── install-guide/
+|   ├── Cloud/
+|   ├── On-premise/  # Kubernetes on-premise installation guide
+│   |   ├── automatic installation/ # Automatic Kubernetes installation
+│   |   |   ├── README.md           # Guide for automatic installation
+│   |   ├── manual installation/    # Manual Kubernetes installation
+│   |   |   ├── README.md           # Guide for manual installation
+│
+├── scripts-install/            # Installation scripts
+│   ├── master.sh               # Installation script for master node
+│   ├── worker.sh               # Installation script for worker node
+├── README.md               # Guide for using the installation scripts
 ```
 
----
+## Usage Guide
 
-## **Step 2: Install Dependencies**
-Install required tools and packages:
+### 1. Automatic Kubernetes Installation by KubeSpray
+Refer to the documentation in [automatic installation](./install-guidle/On-premise/automatic%20installation/README.md)
+
+### 2. Manual Kubernetes Installation
+Refer to the documentation in [manual installation](./install-guidle/On-premise/manual%20installation/README.md)
+
+
+### 3. Running Installation Scripts
+Run the installation script on the master node:
 ```bash
-sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
+bash scripts-install/master.sh
+```
+Run the installation script on the worker node:
+```bash
+bash scripts-install/worker.sh
 ```
 
----
+## Notes
+- Ensure you have `sudo` privileges before running the scripts.
+- Check network configuration and firewall settings before deployment.
 
-## **Step 3: Disable Swap**
-Kubernetes requires swap to be disabled:
-```bash
-sudo swapoff -a
-sudo sed -i '/ swap / s/^/#/' /etc/fstab
-```
+## Contribution
+If you want to contribute, create a Pull Request or open an Issue for discussion.
 
----
-
-## **Step 4: Install Docker or containerd**
-Kubernetes needs a container runtime. We'll use **containerd** (recommended).
-
-### **4.1: Install containerd**
-```bash
-sudo apt install -y containerd
-```
-
-### **4.2: Configure containerd**
-Generate the default configuration file:
-```bash
-sudo mkdir -p /etc/containerd
-sudo containerd config default | sudo tee /etc/containerd/config.toml
-```
-
-Restart containerd:
-```bash
-sudo systemctl restart containerd
-sudo systemctl enable containerd
-```
-
----
-
-## **Step 5: Install Kubernetes Components**
-Install **kubeadm**, **kubelet**, and **kubectl**.
-
-### **5.1: Add the Kubernetes APT repository**
-```bash
-curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-sudo apt update
-```
-
-### **5.2: Install kubeadm, kubelet, and kubectl**
-```bash
-sudo apt install -y kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl
-```
-
----
-
-## **Step 6: Initialize the Kubernetes Cluster**
-Run the following command on the **master node**:
-```bash
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16
-```
-
-### **6.1: Configure kubectl for the current user**
-```bash
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-```
-
-### **6.2: Save the Join Command**
-The output of `kubeadm init` will include a `kubeadm join` command for worker nodes. Save this for later.
-
----
-
-## **Step 7: Install a Pod Network Add-On**
-Choose a CNI (Container Network Interface). We'll use **Calico**.
-
-### **7.1: Apply the Calico manifest**
-```bash
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-```
-
----
-
-## **Step 8: Add Worker Nodes**
-Run the `kubeadm join` command from Step 6.2 on each worker node:
-```bash
-sudo kubeadm join <master-ip>:6443 --token <token> \
-    --discovery-token-ca-cert-hash sha256:<hash>
-```
-
----
-
-## **Step 9: Verify the Cluster**
-### **9.1: Check Nodes**
-On the master node, check the status of nodes:
-```bash
-kubectl get nodes
-```
-
-### **9.2: Check Pods**
-Verify that the cluster is working by checking pods in the `kube-system` namespace:
-```bash
-kubectl get pods -n kube-system
-```
-
----
-
-## **Optional: Enable Autocompletion for kubectl**
-```bash
-sudo apt install -y bash-completion
-echo 'source <(kubectl completion bash)' >>~/.bashrc
-source ~/.bashrc
-```
-
----
-
-## **Troubleshooting Tips**
-1. **Reset the Cluster**  
-   If the installation fails, reset kubeadm and try again:
-   ```bash
-   sudo kubeadm reset -f
-   sudo rm -rf $HOME/.kube
-   ```
-
-2. **Check Logs**  
-   Use the following commands to troubleshoot issues:
-   ```bash
-   journalctl -xeu kubelet
-   kubectl describe pod <pod-name> -n kube-system
-   ```
-
----
-
-This guide provides a basic Kubernetes cluster installation. For production, consider high-availability setups, security configurations, and monitoring tools. Let me know if you'd like additional details!
-
-## By [HungLM](https://www.github.com/HungLM1506)
+## Contact
+By [Hung Le Minh](https://www.github.com/HungLM1506)

@@ -109,7 +109,7 @@ sudo systemctl enable containerd
 ## **Step 6: Install Kubernetes Components**
 Install **kubeadm**, **kubelet**, and **kubectl**.
 
-### **5.1: Add the Kubernetes APT repository**
+### **6.1: Add the Kubernetes APT repository**
 ```bash
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
@@ -120,7 +120,7 @@ mkdir /etc/apt/keyrings
 ```
 
 
-### **5.2: Install kubeadm, kubelet, and kubectl**
+### **6.2: Install kubeadm, kubelet, and kubectl**
 ```bash
 sudo apt update -y
 sudo apt install -y kubelet kubeadm kubectl
@@ -129,7 +129,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 ---
 
-## **Step 6: Initialize the Kubernetes Cluster (1 master node and 2 worker nodes)**
+## **Step 7: Initialize the Kubernetes Cluster (1 master node and 2 worker nodes)**
 
 ![Kubernetes Architecture 1 master and 2 worker](https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg)
 
@@ -150,9 +150,9 @@ sudo kubeadm join 192.168.1.111:6443 --token your_token --discovery-token-ca-cer
 
 ---
 
-## **Step 7: Initialize the Kubernetes Cluster (3 master-worker nodes)**
+## **Step 8: Initialize the Kubernetes Cluster (3 master-worker nodes)**
 
-### **7.1: Perform in k8s-master-1**
+### **8.1: Perform in k8s-master-1**
 ```bash
 sudo kubeadm init --control-plane-endpoint "192.168.1.111:6443" --upload-certs
 mkdir -p $HOME/.kube 
@@ -161,7 +161,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
 ```
 
-### **7.1: Perform in k8s-master-2 and k8s-master-3**
+### **8.1: Perform in k8s-master-2 and k8s-master-3**
 ```bash
 sudo kubeadm join 192.168.1.111:6443 --token your_token --discovery-token-ca-cert-hash your_sha --control-plane --certificate-key your_cert
 mkdir -p $HOME/.kube 
@@ -171,14 +171,14 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ---
 
-## **Step 8: Verify the Cluster**
-### **8.1: Check Nodes**
+## **Step 9: Verify the Cluster**
+### **9.1: Check Nodes**
 On the master node, check the status of nodes:
 ```bash
 kubectl get nodes
 ```
 
-### **8.2: Check Pods**
+### **9.2: Check Pods**
 Verify that the cluster is working by checking pods in the `kube-system` namespace:
 ```bash
 kubectl get pods -n kube-system

@@ -81,6 +81,4 @@ k8s-master-3
 ```sh
 $ ansible-playbook -i inventory/beeshoes-cluster/hosts.ini  --become --become-user=root cluster.yml
 ```
-
-## Cài đặt tiếp tục nginx-ingress giống hệt bài giảng (Bài 5). 
 Comming Soon!
